@@ -7,5 +7,5 @@ urlpatterns = [
     path('api/ingest/', include('ingestion.urls')),
     path('api/emissions/', include('emissions.urls')),
     path('api/dashboard/', DashboardSummaryView.as_view(), name='dashboard'),
-    path('api/auth/', include('rest_framework.urls')),
+    path('api/auth/', include('accounts.urls')),
 ]
