@@ -1,0 +1,228 @@
+{
+  "export_metadata": {
+    "exported_at": "2024-04-02T08:00:00Z",
+    "exported_by": "travel.admin@breatheclient.com",
+    "period_start": "2024-01-01",
+    "period_end": "2024-03-31",
+    "record_count": 4
+  },
+  "trips": [
+    {
+      "trip_id": "TRP-2024-00441",
+      "employee_id": "EMP-1042",
+      "department": "Sales",
+      "cost_center": "2300",
+      "segments": [
+        {
+          "segment_id": "SEG-001",
+          "type": "flight",
+          "origin": "LHR",
+          "destination": "JFK",
+          "departure_date": "2024-03-14",
+          "arrival_date": "2024-03-14",
+          "cabin_class": "business",
+          "carrier": "BA",
+          "flight_number": "BA177",
+          "distance_km": null,
+          "cost_usd": 4200.00,
+          "booking_reference": "ABCXYZ"
+        },
+        {
+          "segment_id": "SEG-002",
+          "type": "hotel",
+          "property_name": "Marriott Times Square",
+          "city": "New York",
+          "country": "US",
+          "check_in": "2024-03-14",
+          "check_out": "2024-03-17",
+          "nights": 3,
+          "cost_usd": 1290.00
+        },
+        {
+          "segment_id": "SEG-003",
+          "type": "ground",
+          "subtype": "taxi",
+          "city": "New York",
+          "country": "US",
+          "date": "2024-03-14",
+          "distance_km": null,
+          "cost_usd": 68.00
+        },
+        {
+          "segment_id": "SEG-004",
+          "type": "flight",
+          "origin": "JFK",
+          "destination": "LHR",
+          "departure_date": "2024-03-17",
+          "arrival_date": "2024-03-18",
+          "cabin_class": "business",
+          "carrier": "BA",
+          "flight_number": "BA178",
+          "distance_km": null,
+          "cost_usd": 4200.00,
+          "booking_reference": "ABCXYZ"
+        }
+      ]
+    },
+    {
+      "trip_id": "TRP-2024-00389",
+      "employee_id": "EMP-0887",
+      "department": "Engineering",
+      "cost_center": "1000",
+      "segments": [
+        {
+          "segment_id": "SEG-005",
+          "type": "flight",
+          "origin": "LHR",
+          "destination": "SIN",
+          "departure_date": "2024-02-19",
+          "arrival_date": "2024-02-20",
+          "cabin_class": "economy",
+          "carrier": "SQ",
+          "flight_number": "SQ322",
+          "distance_km": null,
+          "cost_usd": 890.00,
+          "booking_reference": "DEFPQR"
+        },
+        {
+          "segment_id": "SEG-006",
+          "type": "hotel",
+          "property_name": "Marina Bay Sands",
+          "city": "Singapore",
+          "country": "SG",
+          "check_in": "2024-02-20",
+          "check_out": "2024-02-23",
+          "nights": 3,
+          "cost_usd": 980.00
+        },
+        {
+          "segment_id": "SEG-007",
+          "type": "ground",
+          "subtype": "train",
+          "city": "Singapore",
+          "country": "SG",
+          "date": "2024-02-20",
+          "distance_km": 18,
+          "cost_usd": 4.50
+        },
+        {
+          "segment_id": "SEG-008",
+          "type": "flight",
+          "origin": "SIN",
+          "destination": "LHR",
+          "departure_date": "2024-02-23",
+          "arrival_date": "2024-02-23",
+          "cabin_class": "economy",
+          "carrier": "SQ",
+          "flight_number": "SQ317",
+          "distance_km": null,
+          "cost_usd": 890.00,
+          "booking_reference": "DEFPQR"
+        }
+      ]
+    },
+    {
+      "trip_id": "TRP-2024-00501",
+      "employee_id": "EMP-2201",
+      "department": "Finance",
+      "cost_center": "2300",
+      "segments": [
+        {
+          "segment_id": "SEG-009",
+          "type": "flight",
+          "origin": "LHR",
+          "destination": "CDG",
+          "departure_date": "2024-01-22",
+          "arrival_date": "2024-01-22",
+          "cabin_class": "economy",
+          "carrier": "AF",
+          "flight_number": "AF1681",
+          "distance_km": 344,
+          "cost_usd": 210.00,
+          "booking_reference": "GHIJKL"
+        },
+        {
+          "segment_id": "SEG-010",
+          "type": "ground",
+          "subtype": "taxi",
+          "city": "Paris",
+          "country": "FR",
+          "date": "2024-01-22",
+          "distance_km": 35,
+          "cost_usd": 55.00
+        },
+        {
+          "segment_id": "SEG-011",
+          "type": "flight",
+          "origin": "CDG",
+          "destination": "LHR",
+          "departure_date": "2024-01-23",
+          "arrival_date": "2024-01-23",
+          "cabin_class": "economy",
+          "carrier": "AF",
+          "flight_number": "AF1680",
+          "distance_km": 344,
+          "cost_usd": 210.00,
+          "booking_reference": "GHIJKL"
+        }
+      ]
+    },
+    {
+      "trip_id": "TRP-2024-00612",
+      "employee_id": "EMP-1042",
+      "department": "Sales",
+      "cost_center": "2300",
+      "segments": [
+        {
+          "segment_id": "SEG-012",
+          "type": "flight",
+          "origin": "LHR",
+          "destination": "DXB",
+          "departure_date": "2024-03-25",
+          "arrival_date": "2024-03-25",
+          "cabin_class": "first",
+          "carrier": "EK",
+          "flight_number": "EK003",
+          "distance_km": null,
+          "cost_usd": 8900.00,
+          "booking_reference": "MNOPQR"
+        },
+        {
+          "segment_id": "SEG-013",
+          "type": "hotel",
+          "property_name": "Burj Al Arab",
+          "city": "Dubai",
+          "country": "AE",
+          "check_in": "2024-03-25",
+          "check_out": "2024-03-28",
+          "nights": 3,
+          "cost_usd": 4500.00
+        },
+        {
+          "segment_id": "SEG-014",
+          "type": "ground",
+          "subtype": "taxi",
+          "city": "Dubai",
+          "country": "AE",
+          "date": "2024-03-28",
+          "distance_km": null,
+          "cost_usd": 120.00
+        },
+        {
+          "segment_id": "SEG-015",
+          "type": "flight",
+          "origin": "DXB",
+          "destination": "LHR",
+          "departure_date": "2024-03-28",
+          "arrival_date": "2024-03-28",
+          "cabin_class": "first",
+          "carrier": "EK",
+          "flight_number": "EK004",
+          "distance_km": null,
+          "cost_usd": 8900.00,
+          "booking_reference": "MNOPQR"
+        }
+      ]
+    }
+  ]
+}
