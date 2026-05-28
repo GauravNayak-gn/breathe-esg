@@ -9,14 +9,27 @@ function getCookie(name) {
 
 export async function apiFetch(url, options = {}) {
   const fullUrl = url.startsWith('http') ? url : `${BASE_URL}${url}`;
-  const csrfToken = getCookie('csrftoken');
+  
+  // Ensure we get the latest token before mutating requests
+  let csrfToken = getCookie('csrftoken');
   
   const headers = {
     ...options.headers,
   };
 
-  if (csrfToken && (options.method === 'POST' || options.method === 'PUT' || options.method === 'PATCH' || options.method === 'DELETE')) {
-    headers['X-CSRFToken'] = csrfToken;
+  if (options.method === 'POST' || options.method === 'PUT' || options.method === 'PATCH' || options.method === 'DELETE') {
+      if (!csrfToken && !url.includes('/api/auth/csrf/')) {
+          // Fallback: try to fetch it if missing before a POST
+          try {
+             await fetch(`${BASE_URL}/api/auth/csrf/`, { credentials: 'include' });
+             csrfToken = getCookie('csrftoken');
+          } catch (e) {
+             console.warn("Failed to fetch CSRF fallback", e);
+          }
+      }
+      if (csrfToken) {
+        headers['X-CSRFToken'] = csrfToken;
+      }
   }
 
   const response = await fetch(fullUrl, {
