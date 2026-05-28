@@ -85,17 +85,23 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 LOCAL_FRONTEND_ORIGINS = [
     'http://localhost:5173',
     'http://127.0.0.1:5173',
+    'http://localhost:5174',
+    'http://127.0.0.1:5174',
+    'http://localhost:3000',
+    'http://127.0.0.1:3000',
 ]
 PRODUCTION_FRONTEND_ORIGINS = [
     'https://breathe-esg-eosin.vercel.app',
 ]
+VERCEL_FRONTEND_ORIGIN_REGEX = r'^https://[a-zA-Z0-9-]+\.vercel\.app$'
 
 
-def csv_env(name, defaults):
+def csv_env(name, defaults=None):
     raw_value = os.environ.get(name)
+    values = list(defaults or [])
     if raw_value:
-        return [item.strip() for item in raw_value.split(',') if item.strip()]
-    return defaults
+        values.extend(item.strip() for item in raw_value.split(',') if item.strip())
+    return list(dict.fromkeys(values))
 
 
 # CORS - Specific origins are REQUIRED when CORS_ALLOW_CREDENTIALS is True.
@@ -106,10 +112,17 @@ default_frontend_origins = (
     else PRODUCTION_FRONTEND_ORIGINS
 )
 CORS_ALLOWED_ORIGINS = csv_env('CORS_ALLOWED_ORIGINS', default_frontend_origins)
+CORS_ALLOWED_ORIGIN_REGEXES = csv_env(
+    'CORS_ALLOWED_ORIGIN_REGEXES',
+    [VERCEL_FRONTEND_ORIGIN_REGEX],
+)
 CORS_ALLOW_CREDENTIALS = True
 
 # CSRF
-CSRF_TRUSTED_ORIGINS = csv_env('CSRF_TRUSTED_ORIGINS', default_frontend_origins)
+CSRF_TRUSTED_ORIGINS = csv_env(
+    'CSRF_TRUSTED_ORIGINS',
+    default_frontend_origins + ['https://*.vercel.app'],
+)
 
 # Cookies for authentication.
 # Production needs cross-site secure cookies for Vercel -> Render.
