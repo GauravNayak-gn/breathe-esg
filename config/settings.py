@@ -9,7 +9,7 @@ SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-change-this-in-produc
 # Keep DEBUG False for production security
 DEBUG = os.environ.get('DEBUG', 'False').lower() == 'true'
 
-# Permissive ALLOWED_HOSTS to prevent 400 errors
+# Permissive ALLOWED_HOSTS for Render
 ALLOWED_HOSTS = ['*']
 
 INSTALLED_APPS = [
@@ -82,8 +82,9 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# Permissive CORS for the submission window
-CORS_ALLOW_ALL_ORIGINS = True
+# CORS - Specific origins are REQUIRED when CORS_ALLOW_CREDENTIALS is True
+cors_origins = os.environ.get('CORS_ALLOWED_ORIGINS', 'https://breathe-esg-eosin.vercel.app')
+CORS_ALLOWED_ORIGINS = [o.strip() for o in cors_origins.split(',') if o.strip()]
 CORS_ALLOW_CREDENTIALS = True
 
 # CSRF
@@ -97,6 +98,9 @@ SESSION_COOKIE_HTTPONLY = True
 CSRF_COOKIE_HTTPONLY = False
 SESSION_COOKIE_SECURE = True
 CSRF_COOKIE_SECURE = True
+
+# Render Proxy SSL
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 # DRF
 REST_FRAMEWORK = {
