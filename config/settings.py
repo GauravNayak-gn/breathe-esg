@@ -98,10 +98,10 @@ REST_FRAMEWORK = {
 # CSRF trusted origins for API calls from React
 CSRF_TRUSTED_ORIGINS = os.environ.get('CSRF_TRUSTED_ORIGINS', 'http://localhost:5173,http://127.0.0.1:5173').split(',')
 
-SESSION_COOKIE_SAMESITE = 'Lax'
-CSRF_COOKIE_SAMESITE = 'Lax'
+SESSION_COOKIE_SAMESITE = 'None'
+CSRF_COOKIE_SAMESITE = 'None'
 SESSION_COOKIE_HTTPONLY = True
-CSRF_COOKIE_HTTPONLY = False  # Must be False for frontend to read it if not using header
+CSRF_COOKIE_HTTPONLY = False
 CORS_ALLOW_CREDENTIALS = True
 
 if not DEBUG:
