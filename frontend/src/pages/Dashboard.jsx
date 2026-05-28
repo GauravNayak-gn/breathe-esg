@@ -6,7 +6,9 @@ import { api } from '../api';
 export default function Dashboard() {
   const [summary, setSummary] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [resetting, setResetting] = useState(false);
   const [error, setError] = useState('');
+  const [resetMessage, setResetMessage] = useState('');
   const [uploadStatus, setUploadStatus] = useState({
     sap: { loading: false, result: null, errors: [] },
     utility: { loading: false, result: null, errors: [] },
@@ -64,6 +66,35 @@ export default function Dashboard() {
     }
   };
 
+  const handleReset = async () => {
+    const confirmed = window.confirm(
+      'Clear all uploaded files and processed emissions for this tenant?'
+    );
+    if (!confirmed) return;
+
+    setResetting(true);
+    setError('');
+    setResetMessage('');
+
+    try {
+      const data = await api.ingest.reset();
+      setUploadStatus({
+        sap: { loading: false, result: null, errors: [] },
+        utility: { loading: false, result: null, errors: [] },
+        travel: { loading: false, result: null, errors: [] },
+      });
+      setResetMessage(
+        `Cleared ${data.deleted.emissions} rows from ${data.deleted.ingestions} uploads.`
+      );
+      await fetchSummary();
+    } catch (err) {
+      setError('Failed to reset data.');
+      console.error(err);
+    } finally {
+      setResetting(false);
+    }
+  };
+
   if (loading) return <div className="container">Loading...</div>;
   if (error) return <div className="container" style={{ color: 'var(--danger-color)' }}>{error}</div>;
 
@@ -73,7 +104,20 @@ export default function Dashboard() {
     <div>
       <Navbar />
       <div className="container">
-        <h1 className="mb-4">Dashboard</h1>
+        <div className="page-header">
+          <div>
+            <h1>Dashboard</h1>
+            {resetMessage && <p className="success-text">{resetMessage}</p>}
+          </div>
+          <button
+            type="button"
+            className="btn btn-danger"
+            onClick={handleReset}
+            disabled={resetting || total_rows === 0}
+          >
+            {resetting ? 'Clearing...' : 'Clear Data'}
+          </button>
+        </div>
         
         <div className="stats-grid">
           <StatCard label="Total Rows" value={total_rows} />

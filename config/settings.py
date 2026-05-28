@@ -82,22 +82,44 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# CORS - Specific origins are REQUIRED when CORS_ALLOW_CREDENTIALS is True
-cors_origins = os.environ.get('CORS_ALLOWED_ORIGINS', 'https://breathe-esg-eosin.vercel.app')
-CORS_ALLOWED_ORIGINS = [o.strip() for o in cors_origins.split(',') if o.strip()]
+LOCAL_FRONTEND_ORIGINS = [
+    'http://localhost:5173',
+    'http://127.0.0.1:5173',
+]
+PRODUCTION_FRONTEND_ORIGINS = [
+    'https://breathe-esg-eosin.vercel.app',
+]
+
+
+def csv_env(name, defaults):
+    raw_value = os.environ.get(name)
+    if raw_value:
+        return [item.strip() for item in raw_value.split(',') if item.strip()]
+    return defaults
+
+
+# CORS - Specific origins are REQUIRED when CORS_ALLOW_CREDENTIALS is True.
+# In local DEBUG mode include the Vite dev server origins automatically.
+default_frontend_origins = (
+    LOCAL_FRONTEND_ORIGINS + PRODUCTION_FRONTEND_ORIGINS
+    if DEBUG
+    else PRODUCTION_FRONTEND_ORIGINS
+)
+CORS_ALLOWED_ORIGINS = csv_env('CORS_ALLOWED_ORIGINS', default_frontend_origins)
 CORS_ALLOW_CREDENTIALS = True
 
 # CSRF
-csrf_origins = os.environ.get('CSRF_TRUSTED_ORIGINS', 'https://breathe-esg-eosin.vercel.app')
-CSRF_TRUSTED_ORIGINS = [o.strip() for o in csrf_origins.split(',') if o.strip()]
+CSRF_TRUSTED_ORIGINS = csv_env('CSRF_TRUSTED_ORIGINS', default_frontend_origins)
 
-# Cookies for cross-site authentication
-SESSION_COOKIE_SAMESITE = 'None'
-CSRF_COOKIE_SAMESITE = 'None'
+# Cookies for authentication.
+# Production needs cross-site secure cookies for Vercel -> Render.
+# Local development usually runs over plain HTTP, so secure cookies would be dropped.
+SESSION_COOKIE_SAMESITE = 'Lax' if DEBUG else 'None'
+CSRF_COOKIE_SAMESITE = 'Lax' if DEBUG else 'None'
 SESSION_COOKIE_HTTPONLY = True
 CSRF_COOKIE_HTTPONLY = False
-SESSION_COOKIE_SECURE = True
-CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = not DEBUG
+CSRF_COOKIE_SECURE = not DEBUG
 
 # Render Proxy SSL
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')

@@ -1,6 +1,7 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+from django.db import transaction
 from .models import RawIngestion
 from .parsers.sap_parser import parse_sap_file
 from .parsers.utility_parser import parse_utility_file
@@ -90,3 +91,29 @@ class IngestionListView(APIView):
             'row_count_total', 'row_count_success', 'row_count_failed'
         )
         return Response(list(ingestions))
+
+
+class IngestionResetView(APIView):
+    def post(self, request):
+        tenant = request.user.tenant
+        if tenant is None:
+            return Response({'error': 'User is not assigned to a tenant'}, status=400)
+
+        emission_count = NormalizedEmission.objects.filter(tenant=tenant).count()
+        ingestion_count = RawIngestion.objects.filter(tenant=tenant).count()
+        audit_log_count = EmissionAuditLog.objects.filter(
+            emission__tenant=tenant
+        ).count()
+
+        with transaction.atomic():
+            NormalizedEmission.objects.filter(tenant=tenant).delete()
+            RawIngestion.objects.filter(tenant=tenant).delete()
+
+        return Response({
+            'detail': 'Tenant data reset successfully',
+            'deleted': {
+                'ingestions': ingestion_count,
+                'emissions': emission_count,
+                'audit_logs': audit_log_count,
+            },
+        })

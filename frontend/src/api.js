@@ -99,6 +99,7 @@ export const api = {
       fd.append('file', file);
       return apiFetch('/api/ingest/travel/', { method: 'POST', body: fd });
     },
+    reset: () => apiFetch('/api/ingest/reset/', { method: 'POST' }).then(r => r.json()),
   },
   emissions: {
     list: (params = {}) => {
