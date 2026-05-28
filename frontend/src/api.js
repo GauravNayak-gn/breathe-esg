@@ -1,4 +1,5 @@
 const BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000';
+let csrfTokenCache = null;
 
 function getCookie(name) {
   const value = `; ${document.cookie}`;
@@ -7,29 +8,38 @@ function getCookie(name) {
   return null;
 }
 
+async function getCsrfToken() {
+  const cookieToken = getCookie('csrftoken');
+  if (cookieToken) {
+    csrfTokenCache = cookieToken;
+    return cookieToken;
+  }
+
+  if (csrfTokenCache) return csrfTokenCache;
+
+  const response = await fetch(`${BASE_URL}/api/auth/csrf/`, {
+    credentials: 'include',
+  });
+
+  if (!response.ok) return null;
+
+  const data = await response.json().catch(() => ({}));
+  csrfTokenCache = data.csrfToken || getCookie('csrftoken');
+  return csrfTokenCache;
+}
+
 export async function apiFetch(url, options = {}) {
   const fullUrl = url.startsWith('http') ? url : `${BASE_URL}${url}`;
-  
-  // Ensure we get the latest token before mutating requests
-  let csrfToken = getCookie('csrftoken');
-  
+
   const headers = {
     ...options.headers,
   };
 
   if (options.method === 'POST' || options.method === 'PUT' || options.method === 'PATCH' || options.method === 'DELETE') {
-      if (!csrfToken && !url.includes('/api/auth/csrf/')) {
-          // Fallback: try to fetch it if missing before a POST
-          try {
-             await fetch(`${BASE_URL}/api/auth/csrf/`, { credentials: 'include' });
-             csrfToken = getCookie('csrftoken');
-          } catch (e) {
-             console.warn("Failed to fetch CSRF fallback", e);
-          }
-      }
-      if (csrfToken) {
-        headers['X-CSRFToken'] = csrfToken;
-      }
+    const csrfToken = await getCsrfToken();
+    if (csrfToken) {
+      headers['X-CSRFToken'] = csrfToken;
+    }
   }
 
   const response = await fetch(fullUrl, {
@@ -38,15 +48,11 @@ export async function apiFetch(url, options = {}) {
     headers,
   });
 
-  if (response.status === 403) {
-    if (!url.includes('/api/auth/login/') && !url.includes('/api/auth/csrf/')) {
-       // Only redirect if we are not already trying to auth
-       window.location.href = '/login';
-    }
-  }
-
   if (!response.ok) {
     const errorData = await response.json().catch(() => ({}));
+    if (response.status === 401) {
+      window.location.href = '/login';
+    }
     throw new Error(errorData.error || `Request failed with status ${response.status}`);
   }
 
