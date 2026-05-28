@@ -27,10 +27,16 @@ class LoginView(APIView):
         user = authenticate(username=username, password=password)
         if user is not None:
             login(request, user)
-            return Response({'detail': 'Login successful'})
+            return Response({
+                'detail': 'Login successful',
+                'csrfToken': get_token(request),
+            })
         return Response({'error': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
 
 class LogoutView(APIView):
     def post(self, request):
         logout(request)
-        return Response({'detail': 'Logout successful'})
+        return Response({
+            'detail': 'Logout successful',
+            'csrfToken': get_token(request),
+        })

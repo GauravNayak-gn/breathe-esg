@@ -28,6 +28,16 @@ async function getCsrfToken() {
   return csrfTokenCache;
 }
 
+async function cacheCsrfTokenFromResponse(response) {
+  const contentType = response.headers.get('content-type') || '';
+  if (!contentType.includes('application/json')) return;
+
+  const data = await response.clone().json().catch(() => ({}));
+  if (data.csrfToken) {
+    csrfTokenCache = data.csrfToken;
+  }
+}
+
 export async function apiFetch(url, options = {}) {
   const fullUrl = url.startsWith('http') ? url : `${BASE_URL}${url}`;
 
@@ -55,6 +65,8 @@ export async function apiFetch(url, options = {}) {
     }
     throw new Error(errorData.error || `Request failed with status ${response.status}`);
   }
+
+  await cacheCsrfTokenFromResponse(response);
 
   return response;
 }
